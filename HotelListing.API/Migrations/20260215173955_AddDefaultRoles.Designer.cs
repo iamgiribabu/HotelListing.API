@@ -4,6 +4,7 @@ using HotelListing.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelListing.API.Migrations
 {
     [DbContext(typeof(HotelListingDbContext))]
-    partial class HotelListingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260215173955_AddDefaultRoles")]
+    partial class AddDefaultRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,16 +55,6 @@ namespace HotelListing.API.Migrations
                         .IsUnique();
 
                     b.ToTable("ApiKeys");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AppName = "MyApp",
-                            CreatedAtUtc = new DateTimeOffset(new DateTime(2025, 2, 15, 7, 20, 34, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ExpiresAtUtc = new DateTimeOffset(new DateTime(2026, 2, 15, 7, 20, 34, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Key = "de9b1c8f-5a2e-4c3b-9f1a-2b3c4d5e6f7g"
-                        });
                 });
 
             modelBuilder.Entity("HotelListing.API.Data.ApplicationUser", b =>

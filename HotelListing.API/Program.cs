@@ -5,8 +5,11 @@ using HotelListing.API.InterFace;
 using HotelListing.API.MappingProfiles;
 using HotelListing.API.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,13 +19,26 @@ var connectionString = builder.Configuration.GetConnectionString("HotelListingDb
 builder.Services.AddDbContext<HotelListingDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     //.AddIdentityCore<ApplicationUser>(options => { })
-    //.AddRoles<IdentityRole>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<HotelListingDbContext>();
 
 builder.Services.AddAuthentication(opt =>
 {
-    opt.DefaultAuthenticateScheme = AuthenticationDefaults.ApiKeyScheme;
-    opt.DefaultChallengeScheme = AuthenticationDefaults.ApiKeyScheme;
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer( options =>
+{
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+            ValidAudience = builder.Configuration["JwtSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"])),
+            ClockSkew = TimeSpan.Zero
+        };
 })
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>(AuthenticationDefaults.BasicScheme, _ =>{})
     .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(AuthenticationDefaults.ApiKeyScheme, _ => { });
