@@ -9,6 +9,8 @@ namespace HotelListing.API.InterFace
         Task<IdentityResult> RegisterUserAsync(RegisterUserDto registerUserDto);
         Task<ApplicationUser?> GetUserByEmailAsync(string email);
         Task<bool> CheckPasswordAsync(ApplicationUser user, string password);
+        Task<string> GenerateToken(ApplicationUser user);
+        Task<IdentityResult> AddUserToRoleAsync(RegisterUserDto registerUserDto, string role);
 
     }
 }

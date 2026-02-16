@@ -15,6 +15,7 @@ namespace HotelListing.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class CountriesController : ControllerBase
 {
     private readonly ICountriesService _countriesService;
@@ -45,7 +46,7 @@ public class CountriesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> PutCountry(int id, UpdateCountryDto countryDto)
     {
         if (id != countryDto.CountryId)
@@ -66,6 +67,7 @@ public class CountriesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<Country>> PostCountry(CreateCountryDto countryDto)
     {
        var insertedCountryId =  await _countriesService.AddCountryAsync(countryDto);
@@ -75,6 +77,7 @@ public class CountriesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteCountry(int id)
     {
         await _countriesService.DeleteCountry(id);
